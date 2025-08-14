@@ -10,35 +10,43 @@ export const TaskContext = createContext({
 
 export const TaskContextProvider = ({ children }) => {
   const [tasks, setTasks] = useState([
-    { id: new Date().toISOString(), description: "task", done: false },
+    {
+      id: new Date().toISOString(),
+      description: "task",
+      done: false,
+      createdAt: new Date().toISOString(),
+      completedAt: null
+    },
   ]);
 
+  // Aceita string ou objeto { description }
   const addTask = (task) => {
-    console.log("new task: ", task);
-    setTasks((prevTasks) => {
-      return [...prevTasks, task];
-    });
+    const description = typeof task === "string" ? task : task.description;
+    if (!description || description.trim() === "") return;
+    const newTask = {
+      id: new Date().toISOString(),
+      description,
+      done: false,
+      createdAt: new Date().toISOString(),
+      completedAt: null
+    };
+    setTasks((prevTasks) => [...prevTasks, newTask]);
   };
 
   const removeTask = (task) => {
-    setTasks((prevTasks) => {
-      return prevTasks.filter((t) => t.id !== task.id);
-    });
+    setTasks((prevTasks) => prevTasks.filter((t) => t.id !== task.id));
   };
 
   const finishTask = (task) => {
-    setTasks((prevTasks) => {
-      return [
-        ...prevTasks.map((t) => {
-          return t.id === task.id
-            ? {
-              ...task,
-              done: !task.done,
-            }
-            : t;
-        }),
-      ];
-    });
+    setTasks((prevTasks) =>
+      prevTasks.map((t) =>
+        t.id === task.id
+          ? t.done
+            ? { ...t, done: false, completedAt: null }
+            : { ...t, done: true, completedAt: new Date().toISOString() }
+          : t
+      )
+    );
   };
 
   const clearTasks = () => {

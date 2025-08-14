@@ -1,4 +1,4 @@
-import { View, ScrollView, Text, StyleSheet } from "react-native";
+import { View, ScrollView, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useTaskContext } from "../contexts/TaskContext";
 import { Button as PButton } from "react-native-paper";
 
@@ -35,23 +35,29 @@ export default function TaskList() {
         <ScrollView>
           {tasksContext.tasks.map((task) => {
             return (
-              <View style={styles.taskItem(task)} key={task.id}>
-                <Text style={styles.taskItemText(task)}> {task.description}</Text>
-                <View style={globalStyles.taskItemButtons}>
-                  <PButton
-                    mode="contained-tonal"
-                    onPress={() => onClickTaskHandler(task)}
-                  >
-                    {task.done ? "Para fazer" : "Concluir"}
-                  </PButton>
-                  <PButton
-                    mode="contained-tonal"
-                    onPress={() => onRemoveTaskHandler(task)}
-                  >
-                    Remover
-                  </PButton>
+              <TouchableOpacity
+                key={task.id}
+                onPress={() => navigation.navigate('TaskDetails', { id: task.id })}
+                activeOpacity={0.7}
+              >
+                <View style={styles.taskItem(task)}>
+                  <Text style={styles.taskItemText(task)}> {task.description}</Text>
+                  <View style={globalStyles.taskItemButtons}>
+                    <PButton
+                      mode="contained-tonal"
+                      onPress={() => onClickTaskHandler(task)}
+                    >
+                      {task.done ? "Para fazer" : "Concluir"}
+                    </PButton>
+                    <PButton
+                      mode="contained-tonal"
+                      onPress={() => onRemoveTaskHandler(task)}
+                    >
+                      Remover
+                    </PButton>
+                  </View>
                 </View>
-              </View>
+              </TouchableOpacity>
             );
           })}
         </ScrollView>
